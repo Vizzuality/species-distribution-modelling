@@ -1,6 +1,6 @@
-Package: vizspptools
+Package: vspt
 Type: Package
-Title: Tools for species distribution modelling
+Title: Vizzuality tools for species distribution modelling
 Version: 0.1.0
 Author: Edward Morris and Greta Carette 
 Maintainer: The package maintainer <yourself@somewhere.net>
@@ -8,3 +8,4 @@ Description: Early development of tools to help with species distribution modell
 License: MIT
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.1.1
