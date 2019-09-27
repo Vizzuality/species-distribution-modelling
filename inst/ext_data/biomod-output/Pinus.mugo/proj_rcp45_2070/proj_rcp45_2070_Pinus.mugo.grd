@@ -1,0 +1,25 @@
+[general]
+creator=R package 'raster'
+created=2019-09-11 13:15:18
+[georeference]
+nrows=65
+ncols=73
+xmin=9
+ymin=54
+xmax=27.25
+ymax=70.25
+projection=NA
+[data]
+datatype=FLT4S
+byteorder=little
+nbands=18
+bandorder=BIL
+minvalue=131:35:46:46:18:35:54:2:38:123:28:34:123:10:30:105:1:34
+maxvalue=784:991:923:728:997:946:866:1000:940:797:993:904:797:1000:911:785:1000:905
+nodatavalue=-3.4e+38
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=Pinus.mugo_PA1_RUN1_CTA:Pinus.mugo_PA1_RUN1_RF:Pinus.mugo_PA1_RUN1_GLM:Pinus.mugo_PA1_RUN2_CTA:Pinus.mugo_PA1_RUN2_RF:Pinus.mugo_PA1_RUN2_GLM:Pinus.mugo_PA1_Full_CTA:Pinus.mugo_PA1_Full_RF:Pinus.mugo_PA1_Full_GLM:Pinus.mugo_PA2_RUN1_CTA:Pinus.mugo_PA2_RUN1_RF:Pinus.mugo_PA2_RUN1_GLM:Pinus.mugo_PA2_RUN2_CTA:Pinus.mugo_PA2_RUN2_RF:Pinus.mugo_PA2_RUN2_GLM:Pinus.mugo_PA2_Full_CTA:Pinus.mugo_PA2_Full_RF:Pinus.mugo_PA2_Full_GLM
