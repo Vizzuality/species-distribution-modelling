@@ -29,7 +29,8 @@
 #' out <- zonal_stats_ISEA3HEXAGON_grid(fun,polygon_path,raster_object,grid_res = 11, remove_na = T, clip=F, out_path=out_path)
 #' if(require(tmap)){
 #'   tmap_mode("view")
-#'   tm_shape(out) + tm_fill("mode", palette = sf.colors(3), alpha=0.7, colorNA=NULL)
+#'   tm_shape(out) + tm_fill("mean", palette = sf::sf.colors(3), alpha=0.7, colorNA=NULL)
+#'   tm_shape(out) + tm_fill("mode", palette = sf::sf.colors(3), alpha=0.7, colorNA=NULL)
 #'   }else{plot(out)}
 zonal_stats_ISEA3HEXAGON_grid <- function(fun,
                                           polygon_path,
