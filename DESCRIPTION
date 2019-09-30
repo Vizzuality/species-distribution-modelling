@@ -2,10 +2,25 @@ Package: vspt
 Type: Package
 Title: Vizzuality tools for species distribution modelling
 Version: 0.1.0
-Author: Edward Morris and Greta Carette 
+Authors@R: c(
+    person("Edward P.", "Morris", role = c("aut", "cre"), email = "mailme@gmail.com",
+        comment = c(ORCID="0000-0002-5011-6744")),
+    person("Greta", "Carette", role = c("aut"),
+    comment = c(ORCID = "0000-0001-5115-0146"))
+    )
 Maintainer: The package maintainer <yourself@somewhere.net>
+URL: https://github.com/Vizzuality/species-distribution-modelling
+BugReports: https://github.com/Vizzuality/species-distribution-modelling/issues
 Description: Early development of tools to help with species distribution modelling.
 License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Imports:
+    sf,
+    dggridR,
+    raster,
+    uuid,
+    exactextractr,
+    rgbif,
+    biomod2

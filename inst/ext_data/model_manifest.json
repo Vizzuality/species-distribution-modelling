@@ -1,0 +1,11 @@
+{
+  "bioclimatic_rasters":
+  {"historic":
+    {
+      "bio4": "biovar_Sweden/biovar_historical/biovar04_era5_Sweden_1986-2005.tif",
+      "bio6": "biovar_Sweden/biovar_historical/biovar04_era5_Sweden_1986-2005.tif",
+      "bio10": "biovar_Sweden/biovar_historical/biovar04_era5_Sweden_1986-2005.tif"
+
+    },
+  "future":
+    {"bio4":, "bio6":, "bio10":}}}

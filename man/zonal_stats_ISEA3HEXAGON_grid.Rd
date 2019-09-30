@@ -4,13 +4,13 @@
 \alias{zonal_stats_ISEA3HEXAGON_grid}
 \title{Get zonal stats binned in a hexagon grid}
 \usage{
-zonal_stats_ISEA3HEXAGON_grid(fun, polygon_path, raster_object,
+zonal_stats_ISEA3HEXAGON_grid(fun, polygon_object, raster_object,
   grid_res = 11, remove_na = T, clip = F, out_path = F)
 }
 \arguments{
 \item{fun}{An optional function or character vector, as described in exact_extract {exactextractr}}
 
-\item{polygon_path}{Path to geometry file compatible with sf::st_read}
+\item{polygon_object}{A sf::sf object}
 
 \item{raster_object}{A raster::raster object}
 
@@ -31,17 +31,21 @@ feature collection, and return the grid with calculated properties. Optionally c
 by the geometry object, and saving to file.
 }
 \examples{
-fun = c("mean", "mode")
 polygon_path <- system.file("ext_data", "boundary-vectors", "sweden.shp", package="vspt")
-# FIXME: why does it not read via system.file?
-raster_path <- "/home/edward/Downloads/proj_rcp45_2020_Pinus.mugo_ensemble.grd"
-#system.file("ext_data/predicted-spp-occurence-rasters/proj_rcp45_2020_Pinus.mugo_ensemble.grd", package="vspt")
+polygon_object <- sf::st_as_sf(sf::st_read(polygon_path))
+raster_path <- system.file("ext_data/predicted-spp-occurence-rasters/proj_rcp45_2020_Pinus.mugo_ensemble.grd", package="vspt")
 raster_object <- raster::raster(raster_path, band=6, crs="+proj=longlat +datum=WGS84")
 raster_object
+# Make stack with area
+raster_object <- raster::stack(raster_object, raster::area(raster_object))
 out_path <- file.path(system.file("ext_data/predicted-spp-occurence-vectors", package="vspt"), "SWE_pinus-mugo_rcp45-2020_ensemble.geojson")
-out <- zonal_stats_ISEA3HEXAGON_grid(fun,polygon_path,raster_object,grid_res = 11, remove_na = T, clip=F, out_path=out_path)
+# Define function to apply
+area_weighted_mean <- function(values, coverage_frac){return(weighted.mean(values[,1], values[,2]*coverage_frac, na.rm=TRUE))}
+fun = area_weighted_mean
+out <- zonal_stats_ISEA3HEXAGON_grid(fun, polygon_object,raster_object,grid_res = 11, remove_na = T, clip=F, out_path=out_path)
+names(out)
 if(require(tmap)){
   tmap_mode("view")
-  tm_shape(out) + tm_fill("mode", palette = sf.colors(3), alpha=0.7, colorNA=NULL)
+  tm_shape(out) + tm_fill("zstat_Pinus.mugo_EMcaByROC_mergedAlgo_mergedRun_mergedData", palette = sf::sf.colors(3), alpha=0.7, colorNA=NULL)
   }else{plot(out)}
 }
