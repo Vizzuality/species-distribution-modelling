@@ -5,31 +5,42 @@
 \title{Create masked bioclimatic variable raster stack}
 \usage{
 create_biovar_stack(region = "biovar_Sweden",
-  biovar_list = c("biovar04", "biovar06", "biovar16"),
-  time_period = "biovar_historical",
-  path = "inst/ext_data/bioclimatic")
+  biovar_list = c("biovar01", "biovar02", "biovar03", "biovar04",
+  "biovar05", "biovar06", "biovar07", "biovar08", "biovar09", "biovar10",
+  "biovar11", "biovar12", "biovar13", "biovar14", "biovar15", "biovar16"),
+  scenario_list = c("rcp45", "rcp85", "rcp26", "rcp60"),
+  path = "inst/ext_data/bioclimatic", mask_by_land = T,
+  pca_transform = T)
 }
 \arguments{
 \item{region}{String representing the region directory}
 
 \item{biovar_list}{List of string representing the biovar codes}
 
-\item{time_period}{String representing the time-period code}
-
 \item{path}{String representing the path to the bioclimatic directory}
 }
 \value{
-A list with 'biovar_stack' and 'land_poly' representing the raster::stack
-of the selected bioclimatic variables, for the region and time-period, masked by land mass
-, and a polygon of land, respectively.
+A named list with the region as first level containing lists of;
+data file paths, processed historical and future biovariable rasters,
+polygon of land, the biovariable and scenario lists used, and optionally
+a pca model of the historical biovariables.
 }
 \description{
-Select bioclimatic variable rasters from directory, create a stack and mask by land
+Select historic and future  bioclimatic variable rasters from directory,
+create ensembles, create a stacks, optionally convert to principle components
+and optionally mask by land. Note this function can take a while....
 }
 \examples{
-s <- create_biovar_stack(region='biovar_Sweden',
-biovar_list= c("biovar04","biovar06","biovar16"),
-time_period="biovar_historical",
-path="inst/ext_data/bioclimatic")
-raster::plot(s$biovar_stack)
+bvso <- create_biovar_stack(
+region='biovar_Sweden',
+biovar_list= c("biovar01","biovar02","biovar03","biovar04","biovar05","biovar06",
+            "biovar07","biovar08","biovar09","biovar10","biovar11","biovar12",
+                        "biovar13","biovar14","biovar15","biovar16"),
+                        scenario_list=c("rcp45", "rcp85", "rcp26", "rcp60"),
+                        path="inst/ext_data/bioclimatic",
+                        mask_by_land = T,
+                        pca_transform = T
+                        )
+                        names(bvso)
+                        names(bvso[[1]])
 }

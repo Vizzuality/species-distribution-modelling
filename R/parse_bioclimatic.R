@@ -30,7 +30,7 @@ parse_bioclimatic <- function(path="inst/ext_data/bioclimatic"){
       df[,c("data_type", "biovar_region", "time_period")],
       bn_df[, c("bio_variable", "model", "scenario", "region", "time_interval")]
     )
-    out$file_name <- df$file_name
+    out$file_name <- fl
     row.names(out) <- NULL
     #head(out)
     return(out)
@@ -56,7 +56,7 @@ parse_bioclimatic <- function(path="inst/ext_data/bioclimatic"){
       df[,c("data_type", "biovar_region", "time_period")],
       bn_df[, c("bio_variable", "model", "region", "time_interval")]
     )
-    out$file_name <- df$file_name
+    out$file_name <- fl
     row.names(out) <- NULL
     #head(out)
     return(out)

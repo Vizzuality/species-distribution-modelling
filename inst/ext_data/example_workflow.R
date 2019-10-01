@@ -1,43 +1,54 @@
 require(vspt)
 require(raster)
 
-bv <- create_biovar_stack(
-  region = 'biovar_Sweden',
-  biovar_list = c("biovar04", "biovar06", "biovar16"),
-  time_period = "biovar_historical",
-  path = "inst/ext_data/bioclimatic"
+# Define lists
+region='biovar_Sweden'
+biovar_list= c("biovar01","biovar02","biovar03","biovar04","biovar05","biovar06",
+               "biovar07","biovar08","biovar09","biovar10","biovar11","biovar12",
+               "biovar13","biovar14","biovar15","biovar16")
+scenario_list=c("rcp45", "rcp85", "rcp26", "rcp60")
+
+
+# Create biovar stack object (everything bioclimatic we need for the modelling)
+bvso <- create_biovar_stack(region, biovar_list, scenario_list,
+  path="inst/ext_data/bioclimatic",
+  mask_by_land = T,
+  pca_transform = T
 )
-#plot(s$biovar_stack[[1]])
-#plot(s$land_poly)
+names(bvso)
+names(bvso[[1]])
+save(bvso, file="inst/ext_data/SWE_bioclimatic.rda")
 
-r <- bv$biovar_stack
-raster_object <- raster::stack(r, raster::area(r))
-names(raster_object) <- c(names(r), 'area')
 
-polygon_object <- create_grid_from_poly(bv$land_poly, grid_res=11, set_seed=999)
-names(polygon_object)
+# Create vector polygon grid object
+load("inst/ext_data/SWE_bioclimatic.rda")
+vpgo <- create_grid_from_poly(bvso[[1]]$land_poly, grid_res=11, set_seed=999)
+names(vpgo)
 
-# Define function to apply
-fun <- function(values){
-  nms <- names(values)
-  nms <- names(values)[1:(length(nms) -2)]
-  return(sapply(nms, function(nm){
+# Do zonal statistics on bioclimatic rasters
+do_zs <- function(so){
+  soa <- raster::stack(so, raster::area(r))
+  names(soa) <- c(names(r), 'area')
+  # Define function to apply
+  f1 <- function(values){
+    nms <- names(values)
+    nms <- names(values)[1:(length(nms) -2)]
+    return(sapply(nms, function(nm){
       if(!all(is.na(values[,nm]))){
         out <- weighted.mean(values[,nm], values$area*values$coverage_frac, na.rm=T)}
       else{
         out <- NA
-        }
-  }))
+      }
+    }))
   }
+  return(
+    zonal_stats_poly(fi, vpgo, so, remove_na = T, return_df = T, out_path=F)
+  )
 
-zsp <- zonal_stats_poly(fun,
-                             polygon_object,
-                             raster_object,
-                             remove_na = T,
-                             out_path=F)
+}
+zstat <- list()
+zstat[[1]]$historical <- do_zs(bvso$biovar_Sweden$historical$raw)
 
-
-names(zsp)
 
 if(require(tmap)){
   tmap_mode("view")

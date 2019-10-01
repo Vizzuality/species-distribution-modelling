@@ -1,22 +1,24 @@
 #' Zonal stats for each polygon feature
 #'
 #' @param fun Function to apply to values in each polygon
-#' @param polygon_object A sf polygon feature collection
-#' @param raster_object A raster::raster object
+#' @param vpgo A sf polygon feature collection
+#' @param ro A raster::raster object
 #' @param remove_na Boolean, remove features with NA values?
 #' @param out_path Write object to this path
 #'
 #' @return
 #' A sf::sf object identical to the input polugon object with zonal statistics added
+#' or a dataframe of the zonal statistics.
 #' @export
 #'
 #' @examples
 #' # add example
 zonal_stats_poly <- function(fun,
-                                          polygon_object,
-                                          raster_object,
-                                          remove_na = T,
-                                          out_path=F
+                             vpgo,
+                             ro,
+                             remove_na = T,
+                             return_df = F,
+                             out_path=F
 ){
   nmsr <- names(raster_object)
   bb <- sf::st_bbox(raster_object)
@@ -32,7 +34,7 @@ zonal_stats_poly <- function(fun,
   if(class(zstat)=='list'){zstat <- as.data.frame(do.call(rbind, lapply(zstat, fun)))}
 
   # Add results to polygon
-  out <- sf::st_sf(data.frame(hg, zstat))
+  if(!return_df){out <- sf::st_sf(data.frame(hg, zstat))}else{out <- zstat}
   #names(out) <-  c(nmsp, paste0(c('zstat', nmsr), collapse = '_'))
 
   # Remove NA values
