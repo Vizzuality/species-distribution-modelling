@@ -48,8 +48,8 @@ create_biovar_stack <- function(
   bvso <- list(
     list(
       df_file_paths = NA
-      , historical = list(biovar=NA, pc=NA, raw_masked=NA, pc_masked=NA)
-      , future = list(biovar=NA, pc=NA, raw_masked=NA, pc_masked=NA)
+      , historical = list(raw=NA, pc=NA, raw_masked=NA, pc_masked=NA)
+      , future = list(raw=NA, pc=NA, raw_masked=NA, pc_masked=NA)
       , pca_model = NA
       , land_poly = NA
       , biovar_list = biovar_list
@@ -95,7 +95,7 @@ create_biovar_stack <- function(
     for(y in years){
       for(s in scenes){
         sl <- paste(y, s , biovar_list, sep=".")
-        #print(sl)
+        print(sl)
         #print(na.exclude(match(names(s_list), sl, incomparables = F)))
         ssl <-  s_list[names(s_list) %in% sl]
         st <- raster::stack(ssl)
@@ -122,13 +122,13 @@ create_biovar_stack <- function(
   if(pca_transform){
     print('Converting all stacks to principle components')
     bvso[[1]]$pca_model <- prcomp(raster::values(bvso[[1]]$historical$raw), scale=T, tol = 0.5)
-    bvso[[1]]$historical$pca <- raster::clusterR(bvso[[1]]$historical$raw,
+    bvso[[1]]$historical$pc <- raster::clusterR(bvso[[1]]$historical$raw,
                                              raster::predict,
                                              args = list(model=bvso[[1]]$pca_model,
                                                          index=1:ncol(bvso[[1]]$pca_model$x))
     )
-    names(bvso[[1]]$historical$pca) <- colnames(bvso[[1]]$pca_model$x)
-    bvso[[1]]$future$pca <- lapply(
+    names(bvso[[1]]$historical$pc) <- colnames(bvso[[1]]$pca_model$x)
+    bvso[[1]]$future$pc <- lapply(
       bvso[[1]]$future$raw,
       function(l){
         return(
@@ -156,19 +156,29 @@ create_biovar_stack <- function(
 
   if(mask_by_land){
     print('Masking all stacks by land')
-    bvso[[1]]$historical$raw_masked <- raster::mask(bvso[[1]]$historical$raw, bvso[[1]]$land_poly)
+    try(bvso[[1]]$historical$raw_masked <- raster::mask(bvso[[1]]$historical$raw, bvso[[1]]$land_poly))
+    try(bvso[[1]]$historical$pc_masked <- raster::mask(bvso[[1]]$historical$pc, bvso[[1]]$land_poly))
     try(
-      bvso[[1]]$historical$pc_masked <- raster::mask(bvso[[1]]$historical$pc, bvso[[1]]$land_poly)
+      bvso[[1]]$future$raw_masked <- lapply(bvso[[1]]$future$raw, function(l){
+        return(
+          lapply(l, function(x){
+            #print(class(x[[1]]))
+            return(raster::mask(x[[1]], bvso[[1]]$land_poly))
+            })
+        )
+        })
+      )
+    try(
+      bvso[[1]]$future$pc_masked <- lapply(bvso[[1]]$future$pc, function(l){
+        return(
+          lapply(l, function(x){
+            print(class(x))
+            return(raster::mask(x, bvso[[1]]$land_poly))
+          })
+        )
+      })
     )
-    bvso[[1]]$future$raw_masked <- lapply(bvso[[1]]$future$raw, function(l){
-      return(
-        lapply(l, function(x) raster::mask(x, bvso[[1]]$land_poly))
-      )})
-    try(bvso[[1]]$future$pc_masked <- lapply(bvso[[1]]$future$pc, function(l){
-      return(
-        lapply(l, function(x) raster::mask(x, bvso[[1]]$land_poly))
-      )}))
-      }
+    }
   # End cluster
   raster::endCluster()
   return(bvso)

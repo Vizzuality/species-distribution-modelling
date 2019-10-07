@@ -4,15 +4,15 @@
 \alias{zonal_stats_poly}
 \title{Zonal stats for each polygon feature}
 \usage{
-zonal_stats_poly(fun, polygon_object, raster_object, remove_na = T,
+zonal_stats_poly(fun, vpgo, ro, remove_na = T, return_df = F,
   out_path = F)
 }
 \arguments{
 \item{fun}{Function to apply to values in each polygon}
 
-\item{polygon_object}{A sf polygon feature collection}
+\item{vpgo}{A sf polygon feature collection}
 
-\item{raster_object}{A raster::raster object}
+\item{ro}{A raster::raster object}
 
 \item{remove_na}{Boolean, remove features with NA values?}
 
@@ -20,6 +20,7 @@ zonal_stats_poly(fun, polygon_object, raster_object, remove_na = T,
 }
 \value{
 A sf::sf object identical to the input polugon object with zonal statistics added
+or a dataframe of the zonal statistics.
 }
 \description{
 Zonal stats for each polygon feature

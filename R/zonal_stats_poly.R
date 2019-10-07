@@ -20,17 +20,17 @@ zonal_stats_poly <- function(fun,
                              return_df = F,
                              out_path=F
 ){
-  nmsr <- names(raster_object)
-  bb <- sf::st_bbox(raster_object)
+  nmsr <- names(ro)
+  bb <- sf::st_bbox(ro)
 
   # Crop polygon object to raster bbox
-  crs_poly <-  sf::st_crs(polygon_object)
-  hg <- sf::st_crop(polygon_object, bb)
+  crs_poly <-  sf::st_crs(vpgo)
+  hg <- sf::st_crop(vpgo, bb)
   sf::st_crs(hg) <- crs_poly
   nmsp <- names(hg)
 
   # Get zonal stats for polygons
-  zstat <- exactextractr::exact_extract(x=raster_object, y=hg, fun=NULL)
+  zstat <- exactextractr::exact_extract(x=ro, y=hg, fun=NULL)
   if(class(zstat)=='list'){zstat <- as.data.frame(do.call(rbind, lapply(zstat, fun)))}
 
   # Add results to polygon
